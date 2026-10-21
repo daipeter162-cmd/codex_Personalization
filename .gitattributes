@@ -1,0 +1,2 @@
+# UTF-16 LE file; keep git from rewriting line endings
+*.vbs -text

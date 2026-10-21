@@ -1,0 +1,11 @@
+{
+  "imagePath": "assets/character.png",
+  "splash": true,
+  "duration": 11000,
+  "meshCenter": [0.55, 0.3],
+  "meshRadius": 0.13,
+  "bgOpacity": 0.4,
+  "bgPosition": "center 25%",
+  "surfaceAlpha": 0.6,
+  "debugPort": 9229
+}

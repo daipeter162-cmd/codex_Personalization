@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>Codex Splash Preview</title>
+<link rel="stylesheet" href="src/background.css">
+<style>
+  :root { --codex-bg-image: url("/assets/character.png"); --codex-bg-opacity: 0.6; --codex-surface-alpha: 0.55; --color-surface: #ffffff; }
+  html, body { margin: 0; height: 100%; font-family: "Segoe UI", "Microsoft YaHei", sans-serif; }
+  body { background: #f3f3f3; }
+  .app { position: relative; display: flex; height: 100%; }
+  .sidebar-navigation { width: 300px; padding: 20px; box-sizing: border-box; background: rgba(255,255,255,.65); color: #333; }
+  main { flex: 1; display: grid; place-items: center; margin: 40px 0 0; border-radius: 12px 0 0 0; background: #fff; font-size: 26px; color: #111; }
+  #replay { position: fixed; right: 16px; bottom: 16px; z-index: 10; }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="sidebar-navigation">Codex<br><br>新聊天<br><br>项目</div>
+  <main data-app-shell-main-surface="default">我们应该在这里做些什么？</main>
+</div>
+<button id="replay" onclick="location.reload()">重播</button>
+<script>
+  window.__CODEX_SPLASH__ = { img: 'assets/character.png', duration: 11000, meshCenter: [0.55, 0.3], meshRadius: 0.13 };
+</script>
+<script src="src/splash.js"></script>
+</body>
+</html>

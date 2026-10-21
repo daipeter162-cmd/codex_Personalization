@@ -1,0 +1,28 @@
+/*
+ * Persistent background for the Codex main window.
+ * The launcher prepends  :root { --codex-bg-image: url(...); --codex-bg-opacity: ...; --codex-surface-alpha: ... }
+ * and the splash turns it on with <html data-codex-bg="on">.
+ */
+html[data-codex-bg="on"] body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: var(--codex-bg-image) var(--codex-bg-position, right center) / cover no-repeat;
+  opacity: var(--codex-bg-opacity, 0.35);
+  animation: codex-bg-in 1.2s ease-out both;
+}
+
+/* Main chat surface and sidebar become translucent so the picture shows through. */
+html[data-codex-bg="on"] main[data-app-shell-main-surface="default"] {
+  background-color: color-mix(in srgb, var(--color-surface, #fff) calc(var(--codex-surface-alpha, 0.6) * 100%), transparent) !important;
+}
+html[data-codex-bg="on"] .sidebar-navigation:not(.sidebar-navigation *) {
+  background-color: color-mix(in srgb, var(--color-surface, #fff) calc(min(1, var(--codex-surface-alpha, 0.6) + 0.22) * 100%), transparent) !important;
+}
+
+@keyframes codex-bg-in {
+  from { opacity: 0; }
+  to { opacity: var(--codex-bg-opacity, 0.35); }
+}
