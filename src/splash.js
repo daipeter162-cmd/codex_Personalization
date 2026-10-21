@@ -11,7 +11,9 @@
     duration: 11000,
     meshCenter: [0.55, 0.3], // face position as a fraction of the image
     meshRadius: 0.17,        // fraction of image width
-    code: null,
+    code: null,              // array of lines, or null for the built-in text
+    palette: null,           // hex colours cycled along the neon line art
+    arcColors: null,         // hex colours of the light ribbons
   }, window.__CODEX_SPLASH__ || {});
   if (!cfg.img) return;
   window.__codexSplashActive = true;
@@ -124,7 +126,17 @@
 
   // ---------- image layers ----------
   let photo, edges, glow, rect = { x: 0, y: 0, w: 0, h: 0 };
-  const PALETTE = [[124, 92, 255], [56, 225, 255], [255, 95, 200], [205, 232, 255], [150, 110, 255]];
+  const hexRgb = (hex) => {
+    const m = /^#?([0-9a-f]{6})$/i.exec(String(hex).trim());
+    if (!m) return null;
+    const n = parseInt(m[1], 16);
+    return [n >> 16, (n >> 8) & 255, n & 255];
+  };
+  const hexList = (list, fallback) => {
+    const out = (Array.isArray(list) ? list : []).map(hexRgb).filter(Boolean);
+    return out.length ? out : fallback;
+  };
+  const PALETTE = hexList(cfg.palette, [[124, 92, 255], [56, 225, 255], [255, 95, 200], [205, 232, 255], [150, 110, 255]]);
   function pal(t) {
     t = ((t % 1) + 1) % 1;
     const f = t * PALETTE.length, i = Math.floor(f), u = f - i;
@@ -225,7 +237,8 @@
   }
 
   // ---------- light fx ----------
-  const ARC_COLORS = ['120,230,255', '170,130,255', '235,245,255', '255,120,210', '110,255,220'];
+  const ARC_COLORS = hexList(cfg.arcColors, [[120, 230, 255], [170, 130, 255], [235, 245, 255], [255, 120, 210], [110, 255, 220]])
+    .map((c) => c.join(','));
   const arcs = ARC_COLORS.map((c, i) => ({
     c, y0: rand(0.25, 0.85), y1: rand(0.15, 0.75), c1: rand(0.1, 0.9), c2: rand(0.2, 0.95),
     amp: rand(0.04, 0.12), sp: rand(0.25, 0.6), ph: rand(0, 6.28), w: rand(1.2, 2.6),
@@ -304,7 +317,7 @@
   }
 
   // ---------- code typing ----------
-  const code = (cfg.code || DEFAULT_CODE).join('\n');
+  const code = (Array.isArray(cfg.code) && cfg.code.length ? cfg.code : DEFAULT_CODE).join('\n');
   const esc = (str) => str.replace(/[&<>]/g, (ch) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[ch]));
   let typed = -1;
   function drawCode(t) {
@@ -421,9 +434,11 @@
     window.removeEventListener('keydown', onKey, true);
     root.remove();
     window.__codexSplashActive = false;
+    window.__codexSplashStop = null;
     window.__codexBgWanted = true; document.documentElement.setAttribute('data-codex-bg', 'on');
   }
   const onResize = () => resize();
+  window.__codexSplashStop = finish; // lets a host page (customize.html) cancel and replay
 
   const img = new Image();
   img.onload = () => {

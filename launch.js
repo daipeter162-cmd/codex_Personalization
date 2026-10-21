@@ -57,7 +57,10 @@ function buildPayload() {
   const vars = `--codex-bg-opacity:${cfg.bgOpacity};--codex-bg-position:${cfg.bgPosition};--codex-surface-alpha:${cfg.surfaceAlpha}`;
   const sheet = fs.readFileSync(path.join(ROOT, 'src', 'background.css'), 'utf8');
   const splash = fs.readFileSync(path.join(ROOT, 'src', 'splash.js'), 'utf8');
-  const opts = { duration: cfg.duration, meshCenter: cfg.meshCenter, meshRadius: cfg.meshRadius };
+  const opts = {
+    duration: cfg.duration, meshCenter: cfg.meshCenter, meshRadius: cfg.meshRadius,
+    code: cfg.code, palette: cfg.palette, arcColors: cfg.arcColors,
+  };
 
   // Runs on every new document: background always, splash once per window session.
   // The image goes through a blob: URL because Chromium drops CSS variables larger than ~2 MB.
